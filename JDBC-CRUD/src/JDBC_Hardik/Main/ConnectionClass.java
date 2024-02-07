@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionCLass {
+public class ConnectionClass {
 	public  Connection getconnection() throws ClassNotFoundException, SQLException{
 	Connection con = null;
 	Class.forName("com.mysql.cj.jdbc.Driver");
