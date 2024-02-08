@@ -15,6 +15,7 @@ public class MainClass {
 			System.out.println("Enter 4 for display_One record");
 			System.out.println("Enter 5 for display_All record");
 			int reply = sc.nextInt();
+			System.out.println("");
 			
 			switch(reply) {
 			case 1:

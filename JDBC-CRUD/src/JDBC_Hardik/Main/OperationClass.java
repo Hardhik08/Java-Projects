@@ -14,7 +14,6 @@ public class OperationClass {
 	PreparedStatement psmt = null;
 	int count = 0;
 	public void insertRecord() throws ClassNotFoundException, SQLException {
-			
 		System.out.println("Enter Student UID: ");
 		String studentUID = sc.nextLine();
 		System.out.println("Enter Student Name: ");
