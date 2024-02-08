@@ -2,54 +2,183 @@ package JDBC_Hardik.Main;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class OperationCass {
+public class OperationClass {
 	
 	Scanner sc = new Scanner(System.in);
 	Connection con = null;
-	ConnectionCLass ConnectionObject = new ConnectionCLass();
-	PreparedStatement psmt;
-	public void InsertRecord() throws SQLException, ClassNotFoundException {
-		
-		 
-		
+	ConnectionClass connectionObject = new ConnectionClass();
+	PreparedStatement psmt = null;
+	int count = 0;
+	public void insertRecord() throws ClassNotFoundException, SQLException {
 		System.out.println("Enter Student UID: ");
-		String UID = sc.next();
-		
+		String studentUID = sc.nextLine();
 		System.out.println("Enter Student Name: ");
-		String Name = sc.next();
+		String studentName = sc.nextLine();
+		System.out.println("Enter Student Course: ");
+		String studentCourse = sc.nextLine();
+		System.out.println("Enter Student Batch: ");
+		int studentBatch = sc.nextInt();
 		
-		System.out.println("Enter Student Name: ");
-		String StudentCourse = sc.next();
+	if(con == null) {
+			con = connectionObject.getconnection();
+		String countStatus = "select max(ID) from Student";
+		PreparedStatement psmt0 = con.prepareStatement(countStatus);
+		ResultSet rs = psmt0.executeQuery();
+		if(rs.next()) {
+			count = rs.getInt(1);
+		}
+		String insertQuery ="insert into student values(?,?,?,?,?)";
 		
-		System.out.println("Enter Student Batch Year: ");
-		String BatchYear = sc.next();
-		
-		String insertQuery = "insert into student values(?,?,?,?,?)";
-		int count =0;
-		if(con == null) {
-			con = ConnectionObject.getconnection();
-			 psmt = con.prepareStatement(insertQuery);
-			 count+=1;
-			psmt.setInt(1, count);
-			psmt.setString(2, UID);
-			psmt.setString(3, Name);
-			psmt.setString(4, StudentCourse);
-			psmt.setString(5, BatchYear);
+
+			psmt = con.prepareStatement(insertQuery);
+			count+=1;
+			
+			psmt.setInt(1,count);
+			psmt.setString(2, studentUID);
+			psmt.setString(3, studentName);
+			psmt.setString(4, studentCourse);
+			psmt.setInt(5, studentBatch);
 			int status = psmt.executeUpdate();
 			if(status > 0) {
-				System.out.println("Record Insert Successfully");
+				System.out.println("Record inserted successfully: "+ status);
 			}
 			else {
-				System.out.println("No Record Inserted.");	}
-	}
-		else {
-			System.out.println("Connection already established.");
+				System.out.println("No record inserted !!");
+			}
+			
+		}else {
+			System.out.println("Connection already established !!");
 		}
+		
 		psmt.close();
 		con.close();
+	}
+	
+	
 
+public void updateRecord() throws ClassNotFoundException, SQLException {
+	System.out.println("Enter student UID: ");
+	String studentUID = sc.next();
+	
+	String searchQuery = "select * from student where studentUID = ?";
+	con= connectionObject.getconnection();
+	PreparedStatement psmt1= con.prepareStatement(searchQuery);
+	psmt1.setString(1, studentUID);
+	
+	ResultSet rs= psmt1.executeQuery();
+	if(rs.next()) {
+		System.out.println("Student UID: "+rs.getString(2));
+		System.out.println("Student Name: "+rs.getString(3));
+		System.out.println("Student Course: "+rs.getString(4));
+		System.out.println("Student Batch: "+rs.getInt(5));
+	}
+	else {
+		System.out.println("No Record Found !!");
+	}
+	
+	System.out.println("Enter updated course: ");
+	String updatedCourse=sc.next();
+	String updatedQuery = "update student set studentCourse = ? where studentUID =?";
+	PreparedStatement  psmt2= con.prepareStatement(updatedQuery);
+	psmt2.setString(1,updatedCourse);
+	psmt2.setString(2,studentUID);
+	
+	
+	int status = psmt2.executeUpdate();
+	if(status>0) {
+		System.out.println("Record Updated Successfully !!");
+	}else {
+		System.out.println("Something Went WWrong ...");
+	}
+	psmt1.close();
+	psmt2.close();
+	con.close();
+	
+	
+  }
+
+public void delete() throws ClassNotFoundException, SQLException {
+	System.out.println("Enter student UID: ");
+	String studentUID = sc.next();
+	
+	String searchQuery = "select * from student where studentUID = ?";
+	con= connectionObject.getconnection();
+	PreparedStatement psmt1= con.prepareStatement(searchQuery);
+	psmt1.setString(1, studentUID);
+	
+	ResultSet rs= psmt1.executeQuery();
+	if(rs.next()) {
+		System.out.println("Student UID: "+rs.getString(2));
+		System.out.println("Student Name: "+rs.getString(3));
+		System.out.println("Student Course: "+rs.getString(4));
+		System.out.println("Student Batch: "+rs.getInt(5));
+	}
+	else {
+		System.out.println("No Record Found !!");
+	}
+	System.out.println("DO you confirm to delete the record ? 1/Yes, 0/No");
+	int reply = sc.nextInt();
+	if(reply==1) {
+		 String deleteQuery = "Delete from student where studentUID= ?";
+		 PreparedStatement psmt2 = con.prepareStatement(deleteQuery);
+		 psmt2.setString(1, studentUID);
+		 
+		 int status1 = psmt2.executeUpdate();
+		 if(status1>0) {
+			 System.out.println("Record deleted succussfully !!");
+		 }else {
+			 System.out.println("No record found...");
+		 }
+	}
+ }
+
+public void display_One() throws SQLException, ClassNotFoundException {
+	System.out.println("Enter student UID: ");
+	String studentUID = sc.next();
+	
+	String searchQuery = "select * from student where studentUID = ?";
+	con= connectionObject.getconnection();
+	PreparedStatement psmt1= con.prepareStatement(searchQuery);
+	psmt1.setString(1, studentUID);
+	
+	ResultSet rs= psmt1.executeQuery();
+	if(rs.next()) {
+		System.out.println("Student UID: "+rs.getString(2));
+		System.out.println("Student Name: "+rs.getString(3));
+		System.out.println("Student Course: "+rs.getString(4));
+		System.out.println("Student Batch: "+rs.getInt(5));
+	}
+	else {
+		System.out.println("No Record Found !!");
+	}
+	
 }
+
+public void display_All() throws ClassNotFoundException, SQLException {
+
+	String searchQuery = "select * from student";
+	con= connectionObject.getconnection();
+	PreparedStatement psmt1= con.prepareStatement(searchQuery);
+
+	
+	ResultSet rs= psmt1.executeQuery();
+	if(rs.next()) {
+		while(rs.next()) {
+			System.out.println("Student UID: "+rs.getString(2));
+			System.out.println("Student Name: "+rs.getString(3));
+			System.out.println("Student Course: "+rs.getString(4));
+			System.out.println("Student Batch: "+rs.getInt(5));
+		}
+	}else {
+		System.out.println("No Record Found !!");
+	}
+	
+	
+}
+
+
 }
